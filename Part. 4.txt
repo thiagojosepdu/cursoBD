@@ -1,0 +1,62 @@
+--CREATE TABLE, INSERT, UPDATE, DELETE, ALTER TABLE, DROP TABLE
+
+
+--create table
+create table video (
+videoId int primary key,
+Nome varchar (150) not null,
+Vizualizacoes int default 0,
+Likes int default 0,
+Deslikes int default 0,
+Duracao int not null,
+CanalId int foreign key references Canal(CanalId)
+)
+
+------------------------------------------------------------------
+
+--insert
+INSERT INTO CANAL (CanalId, Nome, ContagemInscritos, datacriacao) values (4, 'Pedro', 4, 2023/01/01)
+INSERT INTO CANAL (CanalId, Nome, ContagemInscritos, datacriacao) values (2, 'João', 2, 2023/01/01)
+INSERT INTO CANAL (CanalId, Nome, ContagemInscritos, datacriacao) values (3, 'Messias', 3, 2023/01/01)
+
+------------------------------------------------------------------------------
+
+--update
+update canal set nome='Vitor'
+where nome = 'Thiago JS'
+
+update canal set ContagemInscritos='10'
+where CanalId=1
+
+-------------------------------------------------------------------------------
+
+--delete
+delete from canal 
+where CanalId = 1
+
+----------------------------------------------------------------------------------------------
+
+--Alter table
+
+--adiciona coluna
+ALTER TABLE Canal 
+add peso int 
+
+ALTER TABLE CANAL
+ALTER COLUMN PESO varchar (30)
+
+
+--Para renomear o nome de uma coluna
+EXEC sp_rename 'canal.peso', 'kg', 'COLUMN'
+
+------------------------------------------------------------------------------
+
+--DROPAR TABELAS
+drop table canal
+
+
+--truncate: apaga as informações que estão dentro da tabela
+truncate table canal
+
+--------------------------------------------------------------------------------------
+

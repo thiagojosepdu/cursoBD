@@ -1,0 +1,84 @@
+--SubQuery ou SubSelect
+
+--Monte um relatório de todos os produtos cadastrados que tem preço de venda acima de média
+
+select AVG(ListPrice)
+from Production.Product 
+
+select *
+from Production.Product
+where ListPrice > 436.66
+
+
+select *
+from Production.Product
+Where ListPrice > (SELECT AVG(listPrice) from Production.Product)
+
+
+
+
+--Eu quero saber o nome dos meus funcionários que tem o cargo de "Design Enginner"
+
+select TOP 10*
+from person.person
+
+select TOP 10*
+from HumanResources.Employee
+where JobTitle = 'Design Engineer'
+
+
+select FirstName
+from person.person
+where BusinessEntityID in (select BusinessEntityID
+from HumanResources.Employee
+where JobTitle = 'Design Engineer')
+
+--OU
+
+select PP.FirstName
+from person.person PP
+INNER JOIN HumanResources.Employee HE ON HE.BusinessEntityID = PP.BusinessEntityID
+where JobTitle = 'Design Engineer'
+
+
+
+--Eu quero todos os endereços que estão de "Alberta", pode trazer todas as informações
+select top 10* 
+from person.address
+
+select top 10*
+from person.stateprovince
+
+select *
+from person.address
+where StateProvinceID in (select StateProvinceID
+from person.stateprovince
+where name = 'Alberta')
+
+
+----------------------------------------------------------------------
+
+--DatePart: Função que permite extrair dados do tipo timestamp
+
+--Exemplo de extração de mês
+select salesorderid, datepart(month, orderdate) as MES
+from sales.SalesOrderHeader
+
+
+----------------------------------------------------------------------
+--Manipulação de String
+
+select concat(FirstName,   LastName)
+from person.person
+
+
+-------------------------------------------------------------
+--Funções Matemáticas
+
+select UnitPrice / LineTotal
+from sales.SalesOrderDetail
+
+----------------------------------------------------------------------
+--Tipos de Dados: Booleanos (BIT), Caractere (CHAR, VARCHAR, NVARCHAR), Números (INT, TINYINT, SMALLINT, BIGINT) e Temporais
+
+

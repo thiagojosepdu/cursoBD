@@ -1,0 +1,24 @@
+--SELF JOIN--Agrupar dados dentro da mesma tabela. É importante lembrar que para isso é necessário utilizar o "as"
+--Selecionar todos os clientes que estão na mesma região
+select a.ContactName, a.region, b.ContactName, b.region
+from customers a, customers b
+where a.region = b.region
+
+
+
+--Eu quero encontrar (nome e data de contratação) de todos os funcionários que foram contratados no mesmo ano
+select top 10*
+from employees
+
+select a.FirstName, a.HireDate, b.FirstName, b.HireDate
+from employees a,  employees b
+where datepart(year,a.HireDate) = datepart(year,b.HireDate)
+
+
+--Eu quero saber na tabela detalhe de pedido (Order Details) quais produtos tem o mesmo porcentual de desconto
+select * 
+from [Order Details]
+
+select A.ProductID, A.Discount, B.ProductID, B. Discount
+from [Order Details] A, [Order Details] B
+where A.Discount = B.Discount 

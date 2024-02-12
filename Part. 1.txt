@@ -1,0 +1,325 @@
+
+--Nome e sobrenome de todos os clientes
+select FirstName, LastName
+from person.person
+
+
+--Quantos nomes únicos temos em nossa tabela person.person. Isto é, remove duplicados
+select distinct FirstName
+from person.person
+
+
+
+--Quantos sobrenomes únicos temos em nossa tabela person.person. Isto é, remove duplicados
+select distinct LastName
+from person.person
+
+--A equipe de produção de produtos precisa do nome de todas as peças que pesam mais que 500kg mas não mais que 700kg para inspeção
+select name
+from Production.Product
+where Weight >= '500' and weight <= 700
+
+--Foi pedido pelo marketing uma relação de todos os empregados (employees) que são casados (single=solteiro, married=cadado) e são assalariados (salaried)
+select *
+from HumanResources.Employee
+where MaritalStatus = 'm' and SalariedFlag = 1
+
+
+--Um usuário chamado Peter Krebs está devendo um pagamento, consiga o email dele para que possamos enviar uma cobrança
+select * 
+from person.person
+where FirstName = 'Peter' and LastName = 'Krebs'
+
+select * 
+from person.EmailAddress
+where BusinessEntityID = 26
+
+
+--Eu quero saber quantos produtos temos cadastrados em nossa tabela de produtos
+select count (*)
+from Production.Product
+
+
+--Eu quero saber quantos tamanhos de produtos temos cadastrados em nossa tabela
+select count (Size)
+from Production.Product
+
+
+--Eu qeuro saber quantos tamanhos diferentes de produtos eu tenho cadastrado em nossa tabela
+select count (distinct size)
+from Production.Product
+
+--Obter o ProductId dos 10 produtos mais caros cadastrado no sistema, listando do mais caro para o mais barato
+select top (10) ProductID
+from Production.Product
+order by listprice desc
+
+
+--Obter o nome e numero do produto que tem o ProductID entre 1 e 4.
+select top(4) name, ProductNumber
+from Production.Product
+order by ProductID asc
+
+
+--Quantos produtos temos cadastrados no sistema que custam mais de 1500?
+select count (Listprice)
+from Production.Product
+where Listprice > 1500
+
+
+--Quantas pessoas temos com o sobrenome que inicia com a letra P?
+select count(lastName)
+from person.person
+where lastName like 'p_%'
+
+
+--Em quantas cidades únicas estão cadastrados nossos clientes?
+select  count (distinct city)
+from person.Address
+
+
+--Quais são as cidades únicas que temos cadastradas em nosso sistema?
+select  distinct city
+from person.Address
+
+
+
+--Quantos produtos vermelhores tem preço entre 500 a 1000 dolares?
+select count (ProductID)
+from Production.Product
+where color = 'red' and ListPrice BETWEEN 500 AND 1000;
+
+
+
+--Quantos produtos cadastrados tem a palavra 'road' no nome deles?
+select count(*)
+from Production.Product
+where name like '%road%'
+
+
+
+--Função soma, minímo, máximo e média
+select top 10 sum(linetotal) AS "SOMA"
+from Sales.SalesOrderDetail
+
+
+select top 10 max(linetotal) AS "MAX"
+from Sales.SalesOrderDetail
+
+
+select top 10 avg(linetotal) AS "AVG"
+from Sales.SalesOrderDetail
+
+
+select top 10 min(linetotal) AS "MIN"
+from Sales.SalesOrderDetail
+
+
+
+
+
+--Vamos dizer que eu quero saber quantos cada produto foi vendido até hoje
+select Productid, count(Productid) as "Contagem"
+from Sales.SalesOrderDetail
+group by ProductID
+
+
+
+
+--Vamos dizer que eu quero saber quantos nomes de cada nome temos cadastrado em nosso banco de dados
+select firstname, count(firstname) 
+from Person.Person
+group by FirstName
+
+
+
+--Na tabela production.product eu quero saber a média de preço para os produtos que são prata(silver)
+select color,  avg(listprice)
+from Production.Product
+where color = 'silver'
+group by color 
+
+
+
+--Eu preciso saber quantos pessoas tem o mesmo MiddleName agrupadas por MiddleName
+select count(MiddleName), MiddleName
+from person.person
+group by MiddleName
+
+
+
+--Eu preciso saber em média qual é a quantidade(quantity) que cada produto é vendido na loja
+select ProductId, avg(OrderQty)
+from Sales.SalesOrderDetail
+group by ProductId
+
+
+
+
+
+--Eu quero saber quais foram as 10 vendas que no total tiveram os maiores valores de venda(line total) por produto do maior valor para o menor
+select top 10 productid, SUM(linetotal)
+from sales.salesorderdetail
+group by ProductID
+order by sum(LineTotal) desc
+
+
+--Eu preciso saber quantos produtos e qual e a quantidade media de produtos temos cadastrados nas nossas ordens de serviços (WorkOrder), agrupados por productID
+select ProductID, count(productID) AS "CONTAGEM", avg(OrderQty) AS "MEDIA"
+from Production.WorkOrder
+group by ProductID
+
+
+--Quais nomes no sistema tem uma ocorrência maior que 10 vezes?
+--OBS: O having sempre tem que vir depois da função de agrupamento, no caso o group by
+select FirstName, COUNT(FirstName) as quantidade
+from Person.Person
+group by FirstName
+having count (FirstName) > 10
+
+
+
+--Queremos saber quais produtos que no total de vendas estão entre 162k a 500k
+select ProductID, sum(LineTotal) as "TOTAL"
+from sales.SalesOrderDetail
+group by ProductID
+having SUM(LineTotal) between 162000 and 500000
+
+
+
+----Quais nomes no sistema tem uma ocorrência maior que 10 vezes, porém somente onde o título é 'Mr'
+--OBS: O having sempre tem que vir depois da função de agrupamento, no caso o group by
+--OBS: Where sempre vem antes do agrupamento
+select FirstName, COUNT(FirstName) as quantidade
+from Person.Person
+where title = 'Mr.'
+group by FirstName
+having count (FirstName) > 10
+
+
+
+
+--Estamos querendo identificar as provincias(stateProvinceId) com maior número de cadastros no nosso sistema, então é preciso encontrar quais províncias(stateProvinceId) estão registradas no banco de dados mais que 100 vezes
+select StateProvinceID, count(StateProvinceID) "QUANTIDADE"
+from person.Address
+group by StateProvinceID
+having count(StateProvinceID) > 1000
+
+
+
+
+--Sendo que se trata de uma mutinacional os gerentes querem saber quais produtos(productId) não estão trazendo em média no mínimo 1 milhão em total de vendas(lineTotal)
+select ProductID, avg(LineTotal)
+from Sales.SalesOrderDetail
+group by productId
+having avg(LineTotal) < 1000000
+
+
+--------------------------------------------------------------------------------------------------------
+--JOIN
+--INNER JOIN
+--BusinessEntityId, FirstName, LastName, EmailAddress
+select P.BusinessEntityID, P.FirstName, P.LastName, PE.EmailAddress
+from person.Person P
+INNER JOIN Person.EmailAddress PE on P.BusinessEntityID = PE.BusinessEntityID
+
+
+
+select top 10 *
+from Person.Person
+
+select top 10 *
+from person.EmailAddress
+
+
+
+--Vamos dizer que nós queremos os nomes dos produtos e as informações de suas subcategorias e preço(ListPrice)
+
+select P.Name, P.ListPrice, S.Name
+from Production.Product P
+INNER JOIN Production.ProductSubcategory S on P.ProductSubcategoryID = S.ProductSubcategoryID
+
+select top 10*
+from Production.Product
+
+
+select top 10*
+from Production.ProductSubcategory
+
+
+--Agora junte todas as colunas 
+select top 10*
+from person.BusinessEntityAddress BA
+INNER JOIN Person.Address PA ON PA.AddressID = BA.AddressID
+
+
+
+
+
+--Trazer o BusinessEntityId, Name, PhoneNumberTypeId, PhoneNumber
+---
+select top 10 *
+from person.PhoneNumberType
+
+
+select top 10*
+from person.PersonPhone
+
+
+
+select  PP.BusinessEntityId , PN.Name, PN.PhoneNumberTypeId, PP.PhoneNumber
+from person.PersonPhone PP
+--JUNTA
+INNER JOIN person.PhoneNumberType PN on PN.PhoneNumberTypeID  =  PP.PhoneNumberTypeID
+
+
+
+
+
+--Trazer o AddressId, City, StateProvinceId, Nome do State
+select top 10 *
+from person.StateProvince
+
+
+
+select top 10*
+from person.Address
+
+
+select TOP 10 PA.AddressId, PA.City, PS.StateProvinceId, PS.Name
+from person.Address PA
+--JUNTA
+INNER JOIN person.StateProvince PS on PS.StateProvinceId  =  PA.StateProvinceId
+
+
+
+
+---------------------------------------------------------------------------------
+
+--LEFT JOIN--traz os registros correspondente das duas tabelas, os registros não correspondente ele preenche como null
+-- Quero descobrir quais pesoas tem um cartão de crédito registrado
+select *
+from person.person PP
+left join sales.PersonCreditCard PC
+on PP.BusinessEntityID = PC.BusinessEntityID
+
+
+-- Quero descobrir quais pesoas não tem um cartão de crédito registrado
+select *
+from person.person PP
+left join sales.PersonCreditCard PC
+on PP.BusinessEntityID = PC.BusinessEntityID
+Where PC.BusinessEntityID IS NULL
+
+
+------------------------------------------------------------------------
+
+
+
+--UNION--Junta as informções e remove os duplicados
+
+
+
+----------------------------------------------------------------------------
+
+--SELF JOIN--Agrupar dados dentro da mesma tabela. É importante lembrar que para isso é necessário utilizar o "as"
